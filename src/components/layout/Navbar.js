@@ -21,7 +21,7 @@ export default function Navbar() {
                     <span>Contact Us</span>
                 </div>
                 <div className="nav-r">
-                    <div style={{ fontSize: 18, cursor: 'pointer' }}>🇬🇧</div>
+                    {/* <div style={{ fontSize: 18, cursor: 'pointer' }}>🇬🇧</div> */}
                     <div className="nib"><i className="ti ti-bell" /></div>
                     <div className="ntg"><i className="ti ti-brand-telegram" /></div>
                     <div className="nib"><i className="ti ti-star" /></div>
