@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Static routes only. /streaks/:id pages are per-streak, DB-backed, and
+  change constantly - listing them here would need a generation step (a
+  small script hitting GET /api/streaks and writing entries, run at deploy
+  time or on a schedule), not a hand-maintained file. Not built yet.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://assuredbets.example/</loc>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://assuredbets.example/streaks</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

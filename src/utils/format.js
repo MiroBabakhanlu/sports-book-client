@@ -1,0 +1,20 @@
+export function ordinal(n) {
+    if (n === null || n === undefined) return '';
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
+}
+
+// Renders "over 1.5" / "under 2" inside a prediction sentence as an <em>
+// the way the mockups' prediction titles highlight the threshold.
+export function highlightThreshold(text, direction, threshold) {
+    if (!text || !direction || threshold === null || threshold === undefined) return text;
+    const needle = `${direction} ${threshold}`;
+    const idx = text.toLowerCase().indexOf(needle.toLowerCase());
+    if (idx === -1) return text;
+    return {
+        before: text.slice(0, idx),
+        match: text.slice(idx, idx + needle.length),
+        after: text.slice(idx + needle.length),
+    };
+}
