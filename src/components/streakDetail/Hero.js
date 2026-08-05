@@ -12,11 +12,14 @@ function PredictionTitle({ text, direction, threshold }) {
     );
 }
 
-export default function Hero({ streakId, match, market, streak_count, prediction, confidence, confidence_label, odds }) {
+export default function Hero({ streakId, match, market, streak_count, prediction, confidence, confidence_label, odds, streak_side }) {
+    const isHomeStreakTeam = streak_side === 'home';
+    const isAwayStreakTeam = streak_side === 'away';
+
     return (
         <div className="hero">
             <div className="hero-grid">
-                <div className="hero-side home">
+                <div className={`hero-side home${isHomeStreakTeam ? ' streak-team' : ''}`}>
                     {match.home.logo_url ? <img src={match.home.logo_url} alt={match.home.name} /> : null}
                     <div className="name">{match.home.name}</div>
                     <div className="sub">Home · <strong>{ordinal(match.home.position)} place</strong></div>
@@ -31,7 +34,7 @@ export default function Hero({ streakId, match, market, streak_count, prediction
                     <div className="league">{match.league.name}</div>
                 </div>
 
-                <div className="hero-side away">
+                <div className={`hero-side away${isAwayStreakTeam ? ' streak-team' : ''}`}>
                     {match.away.logo_url ? <img src={match.away.logo_url} alt={match.away.name} /> : null}
                     <div className="name">{match.away.name}</div>
                     <div className="sub">Away · <strong>{ordinal(match.away.position)} place</strong></div>

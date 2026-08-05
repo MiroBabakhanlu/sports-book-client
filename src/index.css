@@ -287,9 +287,13 @@ img{max-width:100%;}
 .back-link:hover{color:var(--navy);}
 .hero{background:#fff;border:1px solid var(--bdr);border-radius:18px;overflow:hidden;}
 .hero-grid{display:grid;grid-template-columns:190px 1fr 190px 1.4fr;}
-.hero-side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;text-align:center;}
+.hero-side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;text-align:center;border-top:3px solid transparent;}
 .hero-side.home{border-right:1px solid var(--bdr);}
 .hero-side.away{border-left:1px solid var(--bdr);border-right:1px solid var(--bdr);}
+/* Same "which team is this actually about" highlight as the streak cards
+   (.tc.streak-team) - both teams are shown side by side here too, but only
+   one of them is the streak's subject. */
+.hero-side.streak-team{background:var(--teal-l);border-top-color:var(--teal);}
 .hero-side img{width:56px;height:56px;object-fit:contain;}
 .hero-side .name{font-size:14px;font-weight:700;color:var(--navy);}
 .hero-side .sub{font-size:11px;color:var(--g400);}

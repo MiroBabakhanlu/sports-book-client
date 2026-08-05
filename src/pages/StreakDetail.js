@@ -33,7 +33,7 @@ export default function StreakDetail() {
     if (loading) return <div className="page" style={{ display: 'block' }}><div className="load-state">Loading streak detail…</div></div>;
     if (error || !data) return <div className="page" style={{ display: 'block' }}><div className="error-state">Failed to load streak detail.</div></div>;
 
-    const { match, market, streak_count, prediction, confidence, confidence_label, odds, availableBookmakers, leagueStandings, similarStreaks, statistics, chartData, home, away } = data;
+    const { match, market, streak_count, prediction, confidence, confidence_label, odds, availableBookmakers, leagueStandings, similarStreaks, statistics, chartData, home, away, streak_side } = data;
     const allBookmakers = mergeBookmakers(availableBookmakers, odds);
 
     const pageTitle = `${match.home.name} vs ${match.away.name} — ${prediction.text}`;
@@ -65,6 +65,7 @@ export default function StreakDetail() {
                 confidence={confidence}
                 confidence_label={confidence_label}
                 odds={odds}
+                streak_side={streak_side}
             />
 
             <div className="dgrid">
