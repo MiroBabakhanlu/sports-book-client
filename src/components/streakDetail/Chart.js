@@ -1,10 +1,13 @@
+import TwoLaneChart from './TwoLaneChart';
+import { BINARY_MARKET_CONFIG } from '../../utils/markets';
+
 // Ported from public/js/stats/render_stats.js buildChartSVG - same fixed
 // bar-slot sizing, nice-max scaling, and average-relative over/under coloring.
 function ChartSVG({ chartData }) {
     const { avg } = chartData;
-    // API returns oldest-first; the chart reads newest-first left-to-right
-    // (most recent match on the left), so reverse for rendering only.
-    const data = [...chartData.data].reverse();
+    // chartData.data is most-recent-first (see matchup.service.js), same as
+    // every other chart/table on this page - no reordering needed.
+    const data = chartData.data;
     const values = data.map((d) => Number(d.value));
     const rawMax = Math.max(...values, Number(avg) || 0, 1);
     const niceMax = Math.ceil(rawMax * 1.15) || 1;
@@ -56,8 +59,12 @@ function ChartSVG({ chartData }) {
     );
 }
 
-export default function Chart({ chartData }) {
+export default function Chart({ chartData, market, streakCount }) {
     if (!chartData || !chartData.data.length) return null;
+    const binaryConfig = BINARY_MARKET_CONFIG[market?.key];
+    if (binaryConfig) {
+        return <TwoLaneChart chartData={chartData} config={binaryConfig} streakCount={streakCount} />;
+    }
     return (
         <div className="card">
             <div className="card-h">

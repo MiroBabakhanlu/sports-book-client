@@ -1,7 +1,26 @@
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { matchupQueryKey, fetchMatchup } from '../../hooks/useMatchup';
+import { BINARY_MARKET_CONFIG } from '../../utils/markets';
+
+// Binary markets don't have a "direction threshold" line to show (the API only
+// sends {direction, threshold} here, not the full prediction.text) - but
+// direction/threshold are computed with the exact same streak_direction==='below'
+// branch as the real outcome server-side, so 'over' <-> positive and
+// 'under' <-> negative always agree; deriving the outcome word from direction
+// is safe rather than showing a meaningless "over 0.5".
+function predictionLabel(s) {
+    const binary = BINARY_MARKET_CONFIG[s.market.key];
+    if (binary) return s.prediction.direction === 'over' ? binary.positive : binary.negative;
+    return `${s.prediction.direction} ${s.prediction.threshold}`;
+}
 
 export default function SimilarStreaks({ similarStreaks, marketKey }) {
     const items = similarStreaks?.items || [];
+    const queryClient = useQueryClient();
+    const prefetchDetail = (id) => () => {
+        queryClient.prefetchQuery({ queryKey: matchupQueryKey(id), queryFn: () => fetchMatchup(id) });
+    };
 
     return (
         <div className="card">
@@ -14,7 +33,14 @@ export default function SimilarStreaks({ similarStreaks, marketKey }) {
             ) : (
                 <div className="sim-list">
                     {items.map((s) => (
-                        <Link className="sim-card" to={`/streaks/${s.id}`} key={s.id}>
+                        <Link
+                            className="sim-card"
+                            to={`/streaks/${s.id}`}
+                            key={s.id}
+                            onMouseEnter={prefetchDetail(s.id)}
+                            onFocus={prefetchDetail(s.id)}
+                            onTouchStart={prefetchDetail(s.id)}
+                        >
                             <div className="sim-teams">
                                 <div className="sim-team">
                                     {s.home.logo_url ? <img src={s.home.logo_url} alt={s.home.name} /> : null}
@@ -27,7 +53,7 @@ export default function SimilarStreaks({ similarStreaks, marketKey }) {
                                 </div>
                             </div>
                             <div className="sim-meta">
-                                <span className="mkt">{s.market.label} - {s.prediction.direction} {s.prediction.threshold}</span>
+                                <span className="mkt">{s.market.label} - {predictionLabel(s)}</span>
                                 <span className="conf">{s.confidence}%</span>
                             </div>
                         </Link>

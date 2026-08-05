@@ -69,7 +69,7 @@ export default function StreakDetail() {
 
             <div className="dgrid">
                 <div className="dcol">
-                    <Chart chartData={chartData} />
+                    <Chart chartData={chartData} market={market} streakCount={streak_count} />
                     <MatchdayTable home={home} away={away} marketLabel={market.label} />
                     <TeamStats statistics={statistics} match={match} leagueStandings={leagueStandings} />
                 </div>

@@ -1,31 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 
+// Exported so StreakCard can prefetch the exact same cache entry on hover -
+// using this instead of hand-rolling a matching key/fetcher elsewhere keeps
+// the prefetch and the real query guaranteed to land in the same cache slot.
+export const matchupQueryKey = (streakId) => ['matchup', streakId];
+export const fetchMatchup = (streakId) => api.get(`/matchup/${streakId}`).then((res) => res.data.data);
+
 export default function useMatchup(streakId) {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { data, isLoading, error } = useQuery({
+        queryKey: matchupQueryKey(streakId),
+        queryFn: () => fetchMatchup(streakId),
+        enabled: !!streakId,
+    });
 
-    useEffect(() => {
-        if (!streakId) return;
-        let cancelled = false;
-        setLoading(true);
-        setError(null);
-        api
-            .get(`/matchup/${streakId}`)
-            .then((res) => {
-                if (!cancelled) setData(res.data.data);
-            })
-            .catch((err) => {
-                if (!cancelled) setError(err);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
-        return () => {
-            cancelled = true;
-        };
-    }, [streakId]);
-
-    return { data, loading, error };
+    return { data: data ?? null, loading: isLoading, error };
 }

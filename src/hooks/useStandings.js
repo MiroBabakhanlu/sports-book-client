@@ -1,29 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 
 export default function useStandings(leagueId) {
-    const [standings, setStandings] = useState(null);
-    const [loading, setLoading] = useState(!!leagueId);
+    const { data, isLoading } = useQuery({
+        queryKey: ['standings', leagueId],
+        queryFn: () => api.get(`/standings/${leagueId}`).then((res) => res.data.data),
+        enabled: !!leagueId,
+    });
 
-    useEffect(() => {
-        if (!leagueId) return;
-        let cancelled = false;
-        setLoading(true);
-        api
-            .get(`/standings/${leagueId}`)
-            .then((res) => {
-                if (!cancelled) setStandings(res.data.data);
-            })
-            .catch(() => {
-                if (!cancelled) setStandings(null);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
-        return () => {
-            cancelled = true;
-        };
-    }, [leagueId]);
-
-    return { standings, loading };
+    return { standings: data ?? null, loading: isLoading };
 }

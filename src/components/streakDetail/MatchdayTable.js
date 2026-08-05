@@ -1,15 +1,22 @@
+import { BINARY_LABELS_BY_AVG_FOR } from '../../utils/markets';
+
 // Ported from renderMatchdayTable in render_stats.js - shared columns, most
 // recent on the left, '-' padded into a team's leftmost columns when it has
 // played fewer games than the other side.
 function Row({ side, maxLength }) {
     const startIndex = maxLength - side.matches.length;
+    // avg_for ('odd'/'yes') is only set for the two binary markets (see
+    // matchup.service.js) - raw 1/0 values display as ODD/EVEN or YES/NO
+    // instead of the bare number for those.
+    const binaryLabels = side.avg_for ? BINARY_LABELS_BY_AVG_FOR[side.avg_for] : null;
     const cells = Array.from({ length: maxLength }, (_, i) => {
         const m = i >= startIndex ? side.matches[i - startIndex] : null;
         if (!m) return <td key={i}><span className="md-dash">-</span></td>;
         const isOver = side.season_avg !== null && m.value > side.season_avg;
+        const display = binaryLabels ? binaryLabels[m.value] : m.value;
         return (
             <td key={i}>
-                <span className={`md-chip ${isOver ? 'over' : 'under'}`}>{m.value}</span>
+                <span className={`md-chip ${isOver ? 'over' : 'under'}`}>{display}</span>
             </td>
         );
     });
@@ -30,6 +37,8 @@ function Row({ side, maxLength }) {
 export default function MatchdayTable({ home, away, marketLabel }) {
     const maxLength = Math.min(20, Math.max(home.matches.length, away.matches.length));
     if (maxLength === 0) return null;
+    const avgFor = home.avg_for ?? away.avg_for ?? null;
+    const avgHeaderLabel = avgFor ? `Avg (${avgFor})` : 'Avg';
 
     return (
         <div className="card">
@@ -42,7 +51,7 @@ export default function MatchdayTable({ home, away, marketLabel }) {
                     <thead>
                         <tr>
                             <th>Team</th>
-                            <th>Avg</th>
+                            <th>{avgHeaderLabel}</th>
                             <th>Streak</th>
                             {Array.from({ length: maxLength }, (_, i) => (
                                 <th key={i}>MD{maxLength - i}</th>

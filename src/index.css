@@ -96,12 +96,17 @@ img{max-width:100%;}
 .sc:hover{box-shadow:0 6px 28px rgba(13,148,136,.1);border-color:var(--teal-m);}
 .sc.hot{border-left:4px solid var(--teal);}
 .sc-grid{display:grid;grid-template-columns:196px 1fr 196px 1fr;align-items:stretch;}
-.tc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:22px 16px;}
+.tc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:22px 16px;border-top:3px solid transparent;}
 .tc.home{border-right:1px solid var(--bdr);}
 .tc.away{border-left:1px solid var(--bdr);border-right:1px solid var(--bdr);}
+/* Both teams sit side by side on a card, but the streak/prediction only
+   belongs to one of them - tint that column and give it a top accent so
+   it reads as "this one" at a glance instead of the two looking identical. */
+.tc.streak-team{background:var(--teal-l);border-top-color:var(--teal);}
 .tc-logo{width:56px;height:56px;object-fit:contain;}
 .tc-fb{width:56px;height:56px;border-radius:50%;background:var(--g100);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--g400);}
 .tc-name{font-size:13px;font-weight:700;color:var(--navy);text-align:center;line-height:1.25;}
+.tc-side{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-top:-5px;}
 .bk{display:inline-flex;align-items:center;border-radius:5px;overflow:hidden;font-size:12px;font-weight:700;background:#1e293b;color:#fff;}
 .bk .o{padding:4px 8px;color:#fff;background:var(--teal);}
 .bk .n{padding:4px 7px;font-size:10px;font-weight:700;background:#0f1629;color:#fff;}
@@ -325,12 +330,16 @@ img{max-width:100%;}
 .md-table-wrap{overflow-x:auto;}
 .md-table{width:100%;border-collapse:collapse;min-width:640px;}
 .md-table th{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);padding:8px 10px;text-align:center;background:var(--g50);border-bottom:1px solid var(--bdr);white-space:nowrap;}
-.md-table th:first-child{text-align:left;position:sticky;left:0;background:var(--g50);}
+/* Fixed width matching .team-cell below (not just position:sticky) - without
+   it the column sizes to whatever content happens to set it, and a longer
+   team name (e.g. "Sporting Kansas City") renders past its own cell's right
+   edge and visually spills over the scrolling matchday values next to it. */
+.md-table th:first-child{text-align:left;position:sticky;left:0;z-index:1;background:var(--g50);width:150px;min-width:150px;max-width:150px;}
 .md-table td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--bdr);}
 .md-table tr:last-child td{border-bottom:none;}
-.md-table .team-cell{text-align:left;display:flex;align-items:center;gap:8px;white-space:nowrap;position:sticky;left:0;background:#fff;}
-.md-table .team-cell img{width:20px;height:20px;object-fit:contain;}
-.md-table .team-cell span{font-size:12px;font-weight:700;color:var(--navy);}
+.md-table .team-cell{text-align:left;display:flex;align-items:center;gap:8px;white-space:nowrap;position:sticky;left:0;z-index:1;background:#fff;width:150px;min-width:150px;max-width:150px;box-sizing:border-box;}
+.md-table .team-cell img{width:20px;height:20px;object-fit:contain;flex-shrink:0;}
+.md-table .team-cell span{font-size:12px;font-weight:700;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
 .md-chip{display:inline-block;min-width:22px;padding:2px 6px;border-radius:5px;font-size:11.5px;font-weight:700;}
 .md-chip.over{color:var(--blue);background:#eff6ff;}
 .md-chip.under{color:var(--red);background:#fef2f2;}

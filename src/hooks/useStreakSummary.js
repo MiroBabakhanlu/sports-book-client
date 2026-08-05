@@ -1,30 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 
 export default function useStreakSummary(filters) {
-    const [summary, setSummary] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const key = JSON.stringify(filters);
+    const { data, isLoading } = useQuery({
+        queryKey: ['streaksSummary', filters],
+        queryFn: () => api.get('/streaks/summary', { params: filters }).then((res) => res.data.data),
+        placeholderData: (previousData) => previousData,
+    });
 
-    useEffect(() => {
-        let cancelled = false;
-        setLoading(true);
-        api
-            .get('/streaks/summary', { params: filters })
-            .then((res) => {
-                if (!cancelled) setSummary(res.data.data);
-            })
-            .catch(() => {
-                if (!cancelled) setSummary(null);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
-        return () => {
-            cancelled = true;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [key]);
-
-    return { summary, loading };
+    return { summary: data ?? null, loading: isLoading };
 }
