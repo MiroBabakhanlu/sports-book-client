@@ -24,10 +24,12 @@ export default function StreakCard({ streak, className = '' }) {
     const isHomeStreakTeam = streak_side === 'home';
     const isAwayStreakTeam = streak_side === 'away';
 
-    // Prefetch the streak-detail data before the click actually happens - by
-    // the time the user clicks (hover, or a moment before a touch tap lands),
-    // useMatchup's query for this same id/key resolves from cache instantly
-    // instead of showing a loading state on the detail page.
+    // Prefetch the streak-detail data before the click actually happens. The
+    // real prefetch trigger is list-level (useStreaks fires this for every
+    // card on the page as soon as the list loads, so it doesn't depend on the
+    // user ever hovering or scrolling) - this is just a redundant extra shot
+    // on hover/focus/touch, cheap because react-query dedupes it against the
+    // already-fresh/in-flight query instead of firing a second request.
     const prefetchDetail = () => {
         queryClient.prefetchQuery({
             queryKey: matchupQueryKey(streak.id),
